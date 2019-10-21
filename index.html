@@ -12,47 +12,22 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
 
-    <script src="map_mania_v1.js"></script>
+    <script src="map_mania_v2.js"></script>
     <link rel="stylesheet" href="map_style.css"> 
-    <style>
-      #map {
-        height: 90%;
-      }
-
-      html, body { /* Makes page fill the window */
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
   </head>
 
   <body onload="initApplication()">
-    <h1> Stephanie's <u>Top Ten</u> Favorite Places Game</h1>        
-    <div id="map"></div>
-    <script>
+      <h1 id= "demo" ondblclick="myFunction()">Stephanie's &quot;Top Ten&quot; Favorite Places to Visit Game</h1>        
+      Hint: <input id="hint-id" type="text" value="" size="120" disabled><br><br>
+      Score: <input id="score-id" type="text" value="" size="20" disabled><br><br>
 
-function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 3,
-          center: {lat: 12.432, lng: -43.234},
-          mapTypeId: 'terrain'
-        });
+      <script>
+          function myFunction() {  'Cheat code function'
+            alert("What a cheater. Oh well, you win!")
+          }
+          </script>
 
-        var flightPlanCoordinates = [
-          {lat: 41.8781, lng: -87.6298},
-          {lat: 10.3910, lng: -75.4794}
-        ];
-        var flightPath = new google.maps.Polyline({
-          path: flightPlanCoordinates,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-
-        flightPath.setMap(map);
-      }
-    </script>
+      <div id="myMapID"></div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTyBdhHVbdh33DmZLtUj9FmsYJ9SSAb2M&callback=initMap"
     async defer></script>
   </body>

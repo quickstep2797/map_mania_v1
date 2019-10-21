@@ -1,51 +1,123 @@
-//  Location and map variables
-var firstMap;
+//  favorite places variables
 var favoritePlaces = [
-    {content:'Cartagena, Colombia', coordinates:{lat:10.422,lng:-75.537}},
-    {content:'Romeoville, IL', coordinates:{lat:12.432,lng:43.234}}
-];
+    {content:'<strong>#1: Chicago, IL <strong>', coordinates:{lat:41.878113,lng:-87.629799}, iconImagePath:"flag.png"},
+    {content:'<strong>#2: Liverpool, England <strong>', coordinates:{lat:53.408371,lng:-2.9911573}, iconImagePath:"flag.png"},
+    {content:'#3. Amsterdam, England', coordinates:{lat:52.370216,lng:4.895168}, iconImagePath:"flag.png"},
+    {content:'#4. Cartagena, Colombia', coordinates:{lat:10.422930,lng:-75.537262}, iconImagePath:"flag.png"},
+    {content:'#5. Paris, France', coordinates:{lat:48.856613,lng:2.352222}, iconImagePath:"flag.png"},
+    {content:'#6. London, England', coordinates:{lat:51.507351,lng:-0.127758}, iconImagePath:"flag.png"},
+    {content:'#7. Orlando, Florida', coordinates:{lat:28.538330,lng:-81.378883}, iconImagePath:"flag.png"},
+    {content:'#8. Cancun, Mexico', coordinates:{lat:21.161907,lng:-86.851524}, iconImagePath:"flag.png"},
+    {content:'#9. Romeoville, IL', coordinates:{lat:41.647812,lng:-88.087128}, iconImagePath:"flag.png"},
+    {content:'#10. Chattanooga, Tennessee', coordinates:{lat:35.045761,lng:-85.308289}, iconImagePath:"flag.png"}
+]
 
-var flightPlanCoordinates = [
-    {lat: 37.772, lng: -122.214},
-    {lat: 21.291, lng: -157.821},
-    {lat: -18.142, lng: 178.431},
-    {lat: -27.467, lng: 153.027}
-  ];
-  var flightPath = new google.maps.Polyline({
-    path: flightPlanCoordinates,
-    geodesic: true,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 2
-  });
-
-  flightPath.setMap(firstMap);
-}
-
+// when app starts up, prints this on console..
 function initApplication() {
     console.log('Starting up...');
+    window.alert("Getting started: Time to play the Map Game! All you have to do is move around the map with your cursor until you find my favorite places. There will be hints and you'll gain points every time you find a place! Good luck! Remember to have your zoom level at 5 or more!");
+
 }
+
+// Initializing variables
+var currentPlaceIndex = favoritePlaces.length-1;
+var currentPlace = favoritePlaces[currentPlaceIndex];
+var score = 0;
+var zoomLevel = 0;
+var hint = "";
 
 function initMap() {
-    // Creates a new map
-        firstMap = new google.maps.Map(document.getElementById('myMapID'), {
-        center: {lat: 41.878, lng: 10}, zoom: 4});
-
-    // Marker for Colombia    
-    var marker = new google.maps.Marker({position:{lat:10.422930,lng:75.537262}, map:firstMap})    
-   
-    // loc2 is in the Lat and Lng values - this checks to see if Colombia is currently displayed on the map
-    if (firstMap.getBounds().contains(favoritePlaces)) {
-         inBounds = true;
-         console.log('Location 2 is displayed on the map.');
+    // where map begins on start up
+    gMap = new google.maps.Map(document.getElementById("myMapID"), {
+        "center": {"lat": 41.878, "lng": 10}, "zoom": 3});
+    google.maps.event.addListener(gMap, 'idle', function() { updateGame()});
+    //SetHint("Somewhere that feels like home!");
+    SetScore(score); // sets score to score
+    SetHint("Nothing like some Southern comfort food."); // hint on loadup   
 }
-    // bounds_changed function
-    google.maps.event.addListener(firstMap, 'idle', function() {
-        console.log('Bounds changed implemented')
-        var zoomLevel = firstMap.getZoom() // get zoom function
 
-    
-    });
+function updateGame() {
+    var inBounds = false;
+    zoomLevel = gMap.getZoom();
+
+    // prints zoom level in the console 
+    console.log("Zoom Level:" + zoomLevel);
+
+    if (gMap.getBounds().contains(currentPlace.coordinates)) {
+        var inBounds = true;
+        console.log("Inbounds");
+    }
+    // If zoom level is equal to or greater than six AND inbounds, this will happen
+    if ((zoomLevel >= 2) && (inBounds)) {
+        console.log("Ta da! You did it! Time for the next place");
+        addMarker(currentPlace); // adds marker of found place
+        SetScore(score += 10000) // Adds 10,00 points every time nextplace is called
+        nextPlace();
+    }
+
+    if 
 }
+
+function nextPlace() {
+    currentPlaceIndex--;
+    currentPlace = favoritePlaces[currentPlaceIndex];
+
+    // If statement to display the hints at the right time
+    if (currentPlace == favoritePlaces[8]) {
+        SetHint("Take me home... Country roads!")
+    }
+    else if (currentPlace == favoritePlaces[7]) {
+        SetHint("Más margaritas por favor!")
+    }
+    else if (currentPlace == favoritePlaces[6]) {
+        SetHint("Home of the crazy and alligators")
+    }
+    else if (currentPlace == favoritePlaces[5]) {
+        SetHint("Tea time :)")
+    }
+    else if (currentPlace == favoritePlaces[4]) {
+        SetHint("Love, crepes, and berets.")
+    }
+    else if (currentPlace == favoritePlaces[3]) {
+        SetHint("Empanadas and Spanish music. Don't forget the bug spray!")
+    }
+    else if (currentPlace == favoritePlaces[2]) {
+        SetHint("Canals, tulips, AJAX, and stroopwafels!")
+    }
+    else if (currentPlace == favoritePlaces[1]) {
+        SetHint("The Beatles...")
+    }
+    else if (currentPlace == favoritePlaces[0]) {
+        SetHint("Deep dish pizza with a side of road rage.")
+    }
+    else if (currentPlace == favoritePlaces[-1]) {
+        window.alert("Winner!! Congratulations!");
+    }
+}
+// Add marker funciton - will add marker once location is found 
+function addMarker(markerContent) {
+    // initializing marker variable
+    var marker = new google.maps.Marker({position:markerContent.coordinates, map:gMap});
+    if (markerContent.iconImagePath) {
+        marker.setIcon(markerContent.iconImagePath);
+    }
+
+    if (markerContent.content) {
+        var infoWindow = new google.maps.InfoWindow({"content":markerContent.content});
+        marker.addListener("click", function() { infoWindow.open(gMap, marker) });
+    }
+}
+
+// Set hint function
+function SetHint(hint) {
+    document.getElementById("hint-id").value = hint;  
+}
+
+// Set score function
+function SetScore(score) {
+    document.getElementById("score-id").value = score; 
+}
+
+
 
 
